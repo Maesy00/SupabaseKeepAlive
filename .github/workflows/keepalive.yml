@@ -1,0 +1,50 @@
+name: Supabase keep-alive
+
+on:
+  schedule:
+    - cron: "17 6 */3 * *"
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  keepalive:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      # Les clés ci-dessous sont des clés publiques (anon / publishable) :
+      # la sécurité repose sur les règles RLS de Supabase, pas sur leur secret.
+      - name: Ping des projets Supabase
+        run: |
+          set -e
+          ping() {
+            echo "Ping $1"
+            curl --fail --silent --show-error --output /dev/null \
+              -H "apikey: $3" \
+              "$2/rest/v1/$4?select=id&limit=1"
+          }
+          ping "Aurora (Aurora, Ironly, Osmosy)" \
+            "https://eqydrejfdpusuvydcjdp.supabase.co" \
+            "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImVxeWRyZWpmZHB1c3V2eWRjamRwIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODczOTUyOTksImV4cCI6MjEwMjk3MTI5OX0.klBsvnYuG4U9sNZrOjkoYT22EOhMJy8qDuhQFIDf-lo" \
+            "sessions"
+          ping "Finance Nerd" \
+            "https://znwqdmbippqkksurpqud.supabase.co" \
+            "sb_publishable_bPx_799JW24BauqN84h1nQ_1Q0WgK2v" \
+            "flows"
+
+      # GitHub désactive les workflows planifiés d'un dépôt public après
+      # 60 jours sans activité : un commit mensuel remet le compteur à zéro.
+      - name: Commit mensuel pour garder le workflow actif
+        run: |
+          last=$(git log -1 --format=%ct)
+          now=$(date +%s)
+          if [ $((now - last)) -gt $((30 * 24 * 3600)) ]; then
+            date -u +"%Y-%m-%dT%H:%M:%SZ" > last-ping.txt
+            git config user.name "github-actions[bot]"
+            git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+            git add last-ping.txt
+            git commit -m "chore: keep-alive $(date -u +%F)"
+            git push
+          fi
