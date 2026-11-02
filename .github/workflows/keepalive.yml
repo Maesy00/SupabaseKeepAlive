@@ -18,21 +18,28 @@ jobs:
       # la sécurité repose sur les règles RLS de Supabase, pas sur leur secret.
       - name: Ping des projets Supabase
         run: |
-          set -e
+          # Chaque ping est indépendant : une panne sur un projet n'empêche pas
+          # de pinger l'autre. Le job échoue à la fin si au moins un ping a échoué
+          # (GitHub envoie alors un email).
+          failed=0
           ping() {
             echo "Ping $1"
-            curl --fail --silent --show-error --output /dev/null \
+            if ! curl --fail --silent --show-error --retry 2 --retry-delay 5 --output /dev/null \
               -H "apikey: $3" \
-              "$2/rest/v1/$4?select=id&limit=1"
+              "$2/rest/v1/$4?select=id&limit=1"; then
+              echo "::error::Échec du ping de $1"
+              failed=1
+            fi
           }
-          ping "Aurora (Aurora, Ironly, Osmosy)" \
+          ping "Divers.ia (Coach.ia, Brain.ia, Pause)" \
             "https://eqydrejfdpusuvydcjdp.supabase.co" \
             "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImVxeWRyZWpmZHB1c3V2eWRjamRwIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODczOTUyOTksImV4cCI6MjEwMjk3MTI5OX0.klBsvnYuG4U9sNZrOjkoYT22EOhMJy8qDuhQFIDf-lo" \
-            "sessions"
+            "coach_activities"
           ping "Finance Nerd" \
             "https://znwqdmbippqkksurpqud.supabase.co" \
             "sb_publishable_bPx_799JW24BauqN84h1nQ_1Q0WgK2v" \
             "flows"
+          exit $failed
 
       # GitHub désactive les workflows planifiés d'un dépôt public après
       # 60 jours sans activité : un commit mensuel remet le compteur à zéro.
