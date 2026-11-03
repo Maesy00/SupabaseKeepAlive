@@ -31,7 +31,7 @@ jobs:
               failed=1
             fi
           }
-          ping "Divers.ia (Coach.ia, Brain.ia, Pause)" \
+          ping "Divers.ia (Coach.ia, Brain.ia, Inventory.ia, Pause)" \
             "https://eqydrejfdpusuvydcjdp.supabase.co" \
             "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImVxeWRyZWpmZHB1c3V2eWRjamRwIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODczOTUyOTksImV4cCI6MjEwMjk3MTI5OX0.klBsvnYuG4U9sNZrOjkoYT22EOhMJy8qDuhQFIDf-lo" \
             "coach_activities"
