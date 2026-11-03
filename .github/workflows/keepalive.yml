@@ -35,7 +35,7 @@ jobs:
             "https://eqydrejfdpusuvydcjdp.supabase.co" \
             "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImVxeWRyZWpmZHB1c3V2eWRjamRwIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODczOTUyOTksImV4cCI6MjEwMjk3MTI5OX0.klBsvnYuG4U9sNZrOjkoYT22EOhMJy8qDuhQFIDf-lo" \
             "coach_activities"
-          ping "Finance Nerd" \
+          ping "Finance.ia" \
             "https://znwqdmbippqkksurpqud.supabase.co" \
             "sb_publishable_bPx_799JW24BauqN84h1nQ_1Q0WgK2v" \
             "flows"
